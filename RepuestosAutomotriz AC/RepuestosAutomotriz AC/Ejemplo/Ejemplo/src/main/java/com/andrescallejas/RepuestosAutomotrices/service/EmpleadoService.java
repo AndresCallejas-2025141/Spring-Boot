@@ -1,9 +1,9 @@
 package com.andrescallejas.RepuestosAutomotrices.service;
 
-import com.andrescallejas.RepuestosAutomotrices.model.Empleado;
+import com.andrescallejas.RepuestosAutomotrices.entity.Empleado;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+
 @Service
 public interface EmpleadoService {
     List<Empleado> getAllEmpleados();
@@ -11,4 +11,5 @@ public interface EmpleadoService {
     Empleado saveEmpleado (Empleado empleado) throws RuntimeException;
     Empleado updateEmpleado(Integer id, Empleado empleado);
     void deleteEmpleado(Integer id);
+
 }

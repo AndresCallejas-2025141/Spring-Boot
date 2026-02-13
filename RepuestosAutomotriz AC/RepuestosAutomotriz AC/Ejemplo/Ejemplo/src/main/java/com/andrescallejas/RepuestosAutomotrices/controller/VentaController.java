@@ -1,5 +1,5 @@
 package com.andrescallejas.RepuestosAutomotrices.controller;
-import com.andrescallejas.RepuestosAutomotrices.model.Venta;
+import com.andrescallejas.RepuestosAutomotrices.entity.Venta;
 import com.andrescallejas.RepuestosAutomotrices.service.VentaService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestMapping;

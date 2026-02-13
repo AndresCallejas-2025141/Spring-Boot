@@ -1,6 +1,6 @@
 package com.andrescallejas.RepuestosAutomotrices.service;
 
-import com.andrescallejas.RepuestosAutomotrices.model.Proveedor;
+import com.andrescallejas.RepuestosAutomotrices.entity.Proveedor;
 import com.andrescallejas.RepuestosAutomotrices.repository.ProveedorRepository;
 import org.springframework.stereotype.Service;
 

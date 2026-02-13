@@ -1,6 +1,10 @@
-package com.andrescallejas.RepuestosAutomotrices.model;
+package com.andrescallejas.RepuestosAutomotrices.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name ="Proveedores")
@@ -10,15 +14,20 @@ public class Proveedor {
     @Column(name = "id_proveedor")
     private Integer idProveedor;
 
+    @NotBlank(message = "El nombre del proveedor no puede estar vacío")
     @Column(name = "nombre_proveedor")
     private String nombreProveedor;
 
-    @Column(name = "telefono_proveedor")
+    @NotNull(message = "El teléfono es obligatorio")
+    @Min(value = 10000000, message = "El teléfono debe tener al menos 8 dígitos")
     private Integer telefonoProveedor;
 
+
+    @NotBlank(message = "La direccion del proveedor no puede estar vacío")
     @Column(name = "direccion")
     private String direccion;
 
+    @NotBlank(message = "El email del proveedor no puede estar vacío")
     @Column(name = "email_proveedor")
     private String emailProveedor;
 

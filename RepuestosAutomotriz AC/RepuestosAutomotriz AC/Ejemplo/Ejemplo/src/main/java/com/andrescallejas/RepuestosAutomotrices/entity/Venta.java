@@ -1,4 +1,4 @@
-package com.andrescallejas.RepuestosAutomotrices.model;
+package com.andrescallejas.RepuestosAutomotrices.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;

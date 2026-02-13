@@ -1,6 +1,6 @@
 package com.andrescallejas.RepuestosAutomotrices.repository;
 
-import com.andrescallejas.RepuestosAutomotrices.model.Empleado;
+import com.andrescallejas.RepuestosAutomotrices.entity.Empleado;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

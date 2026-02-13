@@ -1,5 +1,5 @@
 package com.andrescallejas.RepuestosAutomotrices.service;
-import com.andrescallejas.RepuestosAutomotrices.model.Repuesto;
+import com.andrescallejas.RepuestosAutomotrices.entity.Repuesto;
 
 import java.util.List;
 

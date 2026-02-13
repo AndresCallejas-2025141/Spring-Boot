@@ -1,5 +1,5 @@
 package com.andrescallejas.RepuestosAutomotrices.service;
-import com.andrescallejas.RepuestosAutomotrices.model.Venta;
+import com.andrescallejas.RepuestosAutomotrices.entity.Venta;
 
 import java.util.List;
 public interface VentaService {
