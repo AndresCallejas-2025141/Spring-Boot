@@ -16,35 +16,98 @@ public class EmpleadoController {
 
     private final EmpleadoService empleadoService;
 
-    public EmpleadoController(EmpleadoService empleadoService){this.empleadoService = empleadoService;;}
+    public EmpleadoController(EmpleadoService empleadoService){this.empleadoService = empleadoService;}
+
     @GetMapping
     public List<Empleado> getAllEmpleados(){return empleadoService.getAllEmpleados();}
 
     @PostMapping
     public ResponseEntity<Object> createEmpleado(@Valid @RequestBody Empleado empleado){
         try {
-            Empleado createdEmpleado = empleadoService.saveEmpleado(empleado);
-            return new ResponseEntity<>(createdEmpleado, HttpStatus.CREATED);
-        }catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            if (empleado.getNombreEmpleado() == null || empleado.getNombreEmpleado().isBlank()) {
+                return ResponseEntity.status(400).body("El nombre del empleado es necesario");
+            }
 
+            if (empleado.getApellidoEmpleado() == null || empleado.getApellidoEmpleado().isBlank()) {
+                return ResponseEntity.badRequest().body("El apellido del empleado es necesario");
+            }
+
+            if (empleado.getEmailEmpleado() == null || empleado.getEmailEmpleado().isBlank()) {
+                return ResponseEntity.badRequest().body("El email del empleado es necesario");
+            }
+
+            if (empleado.getPuestoEmpleado() == null || empleado.getPuestoEmpleado().isBlank()) {
+                return ResponseEntity.badRequest().body("El puesto del empleado es necesario");
+            }else {
+                Empleado createdEmpleado = empleadoService.saveEmpleado(empleado);
+                return new ResponseEntity<>(createdEmpleado, HttpStatus.CREATED);
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Empleado> updateEmpleado(@PathVariable Integer id, @Valid @RequestBody Empleado empleado) {
+    public ResponseEntity<?> actualizarEmpleado(@PathVariable Integer id,@RequestBody Empleado empleado){
+        try {
+            if (empleado.getNombreEmpleado() == null || empleado.getNombreEmpleado().isBlank()) {
+                return ResponseEntity.status(400).body("El nombre del empleado es necesario");
+            }
 
-        Empleado updatedEmpleado = empleadoService.updateEmpleado(id, empleado);
+            if (empleado.getApellidoEmpleado() == null || empleado.getApellidoEmpleado().isBlank()) {
+                return ResponseEntity.badRequest().body("El apellido del empleado es necesario");
+            }
 
-        if (updatedEmpleado != null) {
-            return ResponseEntity.ok(updatedEmpleado);
+            if (empleado.getEmailEmpleado() == null || empleado.getEmailEmpleado().isBlank()) {
+                return ResponseEntity.badRequest().body("El email del empleado es necesario");
+            }
+
+            if (empleado.getPuestoEmpleado() == null || empleado.getPuestoEmpleado().isBlank()) {
+                return ResponseEntity.badRequest().body("El puesto del empleado es necesario");
+            }
+            else {
+                Empleado actualizado = empleadoService.updateEmpleado(id,empleado);
+                if (actualizado != null ){
+                    return ResponseEntity.ok(actualizado);
+                }
+                else {
+                    return ResponseEntity.status(404).body("No se encontro el empleado");
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmpleado(@PathVariable Integer id) {
-        empleadoService.deleteEmpleado(id);
-        return ResponseEntity.noContent().build();
-    }
-}
+    public ResponseEntity<?> deleteEmpleado(@PathVariable Integer id){
+        Empleado empleado = empleadoService.getEmpleadoById(id);
+        if(empleado != null){
+            try {
+                empleadoService.deleteEmpleado(id);
+                return ResponseEntity.ok("Se elimino el Empleado " + id);
+            }catch (IllegalArgumentException e){
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+        }else{
+            return ResponseEntity.status(404).body("No se encontro el empleado " + id);
+        }
 
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getEmpleadoById(@PathVariable Integer id){
+        try {
+            Empleado empleado = empleadoService.getEmpleadoById(id);
+            if (empleado != null) {
+                return ResponseEntity.ok(empleado);
+            }else {
+                return ResponseEntity.status(404).body("No se encontro el empleado");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
+}

@@ -5,15 +5,16 @@ import com.andrescallejas.RepuestosAutomotrices.repository.EmpleadoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class EmpleadoServiceImplements implements EmpleadoService {
-    private final EmpleadoRepository empleadoRepository;
+public class EmpleadoServiceImplements implements EmpleadoService{
+    public final EmpleadoRepository empleadoRepository;
 
-    public EmpleadoServiceImplements(EmpleadoRepository empleadoRepository) {
+    public  EmpleadoServiceImplements(EmpleadoRepository empleadoRepository){
         this.empleadoRepository = empleadoRepository;
-    }
 
+    }
     @Override
     public List<Empleado> getAllEmpleados() {
         return empleadoRepository.findAll();
@@ -31,17 +32,24 @@ public class EmpleadoServiceImplements implements EmpleadoService {
 
     @Override
     public Empleado updateEmpleado(Integer id, Empleado empleado) {
-        Empleado empleadoExistente = empleadoRepository.findById(id).orElse(null);
+        //Optional es un contenedor que puede o no tener objetos, evita errores si esta vacio.
+        Optional<Empleado> empleadoExistente = empleadoRepository.findById(id);
+        if(empleadoExistente.isPresent()){
+            Empleado empleadoNew = empleadoExistente.get();
+            empleadoNew.setNombreEmpleado(empleado.getNombreEmpleado());
+            empleadoNew.setApellidoEmpleado(empleado.getApellidoEmpleado());
+            empleadoNew.setPuestoEmpleado(empleado.getPuestoEmpleado());
+            empleadoNew.setEmailEmpleado(empleado.getEmailEmpleado());
 
-        if (empleadoExistente != null) {
-            empleado.setIdEmpleado(id);
-            return empleadoRepository.save(empleado);
+            return empleadoRepository.save(empleadoNew);
+        }else{
+            return null;
         }
-        return null;
+
     }
 
     @Override
     public void deleteEmpleado(Integer id) {
-    empleadoRepository.deleteById(id);
+        empleadoRepository.deleteById(id);
     }
 }

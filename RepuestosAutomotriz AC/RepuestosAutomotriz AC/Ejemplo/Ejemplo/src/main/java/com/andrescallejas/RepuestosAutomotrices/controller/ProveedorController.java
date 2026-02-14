@@ -14,37 +14,96 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/proveedores")
 public class ProveedorController {
+    public final ProvedorService provedorService;
 
-    private final ProvedorService provedorService;
-    public ProveedorController(ProvedorService provedorService){this.provedorService = provedorService;;}
+    public ProveedorController(ProvedorService provedorService){
+        this.provedorService = provedorService;
+    }
+
     @GetMapping
-    public List<Proveedor> getAllProveedor(){return provedorService.getAllProveedor();}
+    public List<Proveedor> getAllProveedor(){
+        return provedorService.getAllProveedor();
+    }
 
-    @PostMapping
-    public ResponseEntity<Object> createProveedor(@Valid @RequestBody Proveedor proveedor){
+    @GetMapping("/{id}")
+    public ResponseEntity<?>  getProveedorById(@PathVariable Integer id){
         try {
-            Proveedor createdProveedor = provedorService.saveProveedor(proveedor);
-            return new ResponseEntity<>(createdProveedor, HttpStatus.CREATED);
-        }catch (IllegalArgumentException e) {
+            Proveedor provedor = provedorService.getProveedorById(id);
+            if (provedor != null){
+                return ResponseEntity.ok(provedor);
+            }else {
+                return ResponseEntity.status(404).body("No se encontro el proveedor");
+            }
+        }catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
-
         }
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<Proveedor> updateProveedor(@PathVariable Integer id, @Valid @RequestBody Proveedor proveedor) {
 
-        Proveedor updatedProveedor = provedorService.updateProveedor(id, proveedor);
-
-        if (updatedProveedor != null) {
-            return ResponseEntity.ok(updatedProveedor);
+    @PostMapping
+    public ResponseEntity<?> saveProveedor(@Valid @RequestBody Proveedor proveedor){
+        try {
+            if (proveedor.getNombreProveedor() == null || proveedor.getNombreProveedor().isBlank()) {
+                return ResponseEntity.status(400).body("El nombre del proveedor es necesario");
+            }
+            if (proveedor.getDireccion() == null || proveedor.getDireccion().isBlank()) {
+                return ResponseEntity.badRequest().body("La direccion del proveedor es necesario");
+            }
+            if (proveedor.getEmailProveedor() == null || proveedor.getEmailProveedor().isBlank()) {
+                return ResponseEntity.badRequest().body("El email del proveedor es necesario");
+            }
+            if (proveedor.getTelefonoProveedor() == null) {
+                return ResponseEntity.badRequest().body("El telefono del proveedor es necesario");
+            }else {
+                Proveedor createdP = provedorService.saveProveedor(proveedor);
+                return new ResponseEntity<>(createdP, HttpStatus.CREATED);
+            }
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateProveedor(@Valid @PathVariable Integer id, @Valid @RequestBody Proveedor proveedor){
+        try {
+            if (proveedor.getNombreProveedor() == null || proveedor.getNombreProveedor().isBlank()) {
+                return ResponseEntity.status(400).body("El nombre del proveedor es necesario");
+            }
+            if (proveedor.getDireccion() == null || proveedor.getDireccion().isBlank()) {
+                return ResponseEntity.badRequest().body("La direccion del proveedor es necesario");
+            }
+            if (proveedor.getEmailProveedor() == null || proveedor.getEmailProveedor().isBlank()) {
+                return ResponseEntity.badRequest().body("El email del proveedor es necesario");
+            }
+            if (proveedor.getTelefonoProveedor() == null) {
+                return ResponseEntity.badRequest().body("El telefono del proveedor es necesario");
+            }else {
+                Proveedor existente = provedorService.getProveedorById(id);
+                if (existente != null) {
+                    Proveedor NewProveedor = provedorService.updateProveedor(id, proveedor);
+                    return ResponseEntity.ok(NewProveedor);
+                } else {
+                    return ResponseEntity.status(404).body("No se encontro el proveedor id: " + id);
+                }
+            }
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProveedor(@PathVariable Integer id) {
-        provedorService.deleteProveedor(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteProveedor(@Valid @PathVariable Integer id){
+        try {
+            Proveedor existente = provedorService.getProveedorById(id);
+            if (existente != null){
+                provedorService.deleteProveedor(id);
+                return ResponseEntity.ok("Se elimino correcta mente el proveedor id: "+id);
+            }else {
+                return ResponseEntity.status(404).body("No se encontro el proveedor id: "+id);
+            }
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
-}
 
+
+}

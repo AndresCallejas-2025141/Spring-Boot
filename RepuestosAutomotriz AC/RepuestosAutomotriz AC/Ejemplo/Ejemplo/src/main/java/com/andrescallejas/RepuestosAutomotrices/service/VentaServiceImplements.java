@@ -5,12 +5,12 @@ import com.andrescallejas.RepuestosAutomotrices.repository.VentaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class VentaServiceImplements implements VentaService {
-    private final VentaRepository ventaRepository;
-
-    public VentaServiceImplements(VentaRepository ventaRepository) {
+public class VentaServiceImplements implements VentaService{
+    public final VentaRepository ventaRepository;
+    public VentaServiceImplements(VentaRepository ventaRepository){
         this.ventaRepository = ventaRepository;
     }
 
@@ -31,13 +31,19 @@ public class VentaServiceImplements implements VentaService {
 
     @Override
     public Venta updateVenta(Integer id, Venta venta) {
-        Venta ventaExistente = ventaRepository.findById(id).orElse(null);
+        Optional<Venta> VentaExistente = ventaRepository.findById(id);
+        if (VentaExistente.isPresent()){
+            Venta ventaNew = VentaExistente.get();
+            ventaNew.setCantidad(venta.getCantidad());
+            ventaNew.setFechaVenta(venta.getFechaVenta());
+            ventaNew.setTotal(venta.getTotal());
+            ventaNew.setIdEmpleado(venta.getIdEmpleado());
+            ventaNew.setIdRepuesto(venta.getIdRepuesto());
 
-        if (ventaExistente != null) {
-            venta.setIdVenta(id);
-            return ventaRepository.save(venta);
+            return ventaRepository.save(ventaNew);
+        }else {
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -45,4 +51,3 @@ public class VentaServiceImplements implements VentaService {
         ventaRepository.deleteById(id);
     }
 }
-

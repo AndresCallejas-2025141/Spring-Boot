@@ -5,6 +5,7 @@ import com.andrescallejas.RepuestosAutomotrices.repository.RepuestoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RepuestoServiceImplements implements RepuestoService {
@@ -30,13 +31,17 @@ public class RepuestoServiceImplements implements RepuestoService {
 
     @Override
     public Repuesto updateRepuesto(Integer id, Repuesto repuesto) {
-        Repuesto repuestoExistente = repuestoRepository.findById(id).orElse(null);
+        Optional<Repuesto> repuestoExistente = repuestoRepository.findById(id);
+        if(repuestoExistente.isPresent()){
+            Repuesto repuestoNew = repuestoExistente.get();
+            repuestoNew.setNombreRepuesto(repuesto.getNombreRepuesto());
+            repuestoNew.setCategoriaRepuesto(repuesto.getCategoriaRepuesto());
+            repuestoNew.setPrecioCompra(repuesto.getPrecioCompra());
+            repuestoNew.setPrecioVenta(repuesto.getPrecioVenta());
+            repuestoNew.setIdProveedor(repuesto.getIdProveedor());
 
-        if (repuestoExistente != null) {
-            repuesto.setIdRepuesto(id);
-            return repuestoRepository.save(repuesto);
-        }
-        return null;
+            return repuestoRepository.save(repuestoNew);
+        }else return null;
     }
 
     @Override
@@ -44,4 +49,3 @@ public class RepuestoServiceImplements implements RepuestoService {
         repuestoRepository.deleteById(id);
     }
 }
-

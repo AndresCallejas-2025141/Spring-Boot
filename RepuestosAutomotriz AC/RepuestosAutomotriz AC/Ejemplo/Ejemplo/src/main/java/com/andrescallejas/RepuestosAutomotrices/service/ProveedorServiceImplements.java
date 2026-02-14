@@ -5,9 +5,11 @@ import com.andrescallejas.RepuestosAutomotrices.repository.ProveedorRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProveedorServiceImplements implements ProvedorService {
+
     private final ProveedorRepository proveedorRepository;
 
     public ProveedorServiceImplements(ProveedorRepository proveedorRepository) {
@@ -31,13 +33,23 @@ public class ProveedorServiceImplements implements ProvedorService {
 
     @Override
     public Proveedor updateProveedor(Integer id, Proveedor proveedor) {
-        Proveedor proveedorExistente = proveedorRepository.findById(id).orElse(null);
 
-        if (proveedorExistente != null) {
-            proveedor.setIdProveedor(id);
-            return proveedorRepository.save(proveedor);
+        Optional<Proveedor> existente = proveedorRepository.findById(id);
+
+        if (existente.isPresent()) {
+
+            Proveedor proveedorExistente = existente.get();
+
+            // Actualización campo por campo (igual que en el ejemplo)
+            proveedorExistente.setEmailProveedor(proveedor.getEmailProveedor());
+            proveedorExistente.setNombreProveedor(proveedor.getNombreProveedor());
+            proveedorExistente.setTelefonoProveedor(proveedor.getTelefonoProveedor());
+            proveedorExistente.setDireccion(proveedor.getDireccion());
+
+            return proveedorRepository.save(proveedorExistente);
+        } else {
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -45,5 +57,6 @@ public class ProveedorServiceImplements implements ProvedorService {
         proveedorRepository.deleteById(id);
     }
 }
+
 
 
